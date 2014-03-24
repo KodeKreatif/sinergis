@@ -23,7 +23,7 @@ module.exports = function (policy) {
 
   // models
   var User = policy.User || require ("./models/user");
-  var get = thunkify(User.get);
+  var authFunction = thunkify(User.authenticate);
 
   router.get("/login", function * (next) {
     if (this.session.user) {
@@ -42,10 +42,10 @@ module.exports = function (policy) {
     try {
       // @todo: check to database via user model, user model can fetch the data directly from db or api
       var body = yield parse(this, { limit: '1kb' });
-      var user = yield get(body.username);
+      var authenticated = yield authFunction(body.username, body.password);
 
-      if (user.password == body.password) {
-        this.session.user = user.id;
+      if (authenticated) {
+        this.session.user = body.username;
         // this.session.jwt = 
         // this.session.sid = 
 
