@@ -39,14 +39,18 @@ module.exports = function (policy) {
         var endpoints = require (path.resolve(root));
         var routes = endpoints().routes;
 
+        // Check policy.api existence first or just assume it's defined in the policy?
+        var apiEndpoints = policy.api.endpoints || {};
+
         for (var j = 0; j < routes.length ; j++) {
-          // @todo put this to be configurable
           // @todo put this to be via HTTP
           var route = routes[j];
-          if (route.name == "users") {
-            var model = root + "/users/models/user";
-            policy.User = require(path.resolve(model));
-            break;
+          if (apiEndpoints[route.name]) {
+            var data = apiEndpoints[route.name];
+            if (data.model && data.policy) {
+              var model = root + data.model;
+              policy[data.policy] = require(path.resolve(model));
+            }
           }
         }
       }
