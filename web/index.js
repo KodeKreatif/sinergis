@@ -42,10 +42,10 @@ module.exports = function (policy) {
     try {
       // @todo: check to database via user model, user model can fetch the data directly from db or api
       var body = yield parse(this, { limit: '1kb' });
-      var authenticated = yield authFunction(body.username, body.password);
+      var user = yield authFunction(body.username, body.password);
 
-      if (authenticated) {
-        this.session.user = body.username;
+      if (user) {
+        this.session.user = user.id;
         // this.session.jwt = 
         // this.session.sid = 
 
@@ -56,7 +56,6 @@ module.exports = function (policy) {
       }
 
     } catch (err) {
-      console.log (err);
       this.redirect("/login");
     }
 
