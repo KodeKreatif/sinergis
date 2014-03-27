@@ -31,8 +31,19 @@ module.exports = function (options) {
       // @todo throw error, and push reload (if an api call)
       // this.throw (403);
 
+      var anonymous = false;
+      if (options.app && options.app.anonymousPaths) {
+        var anonymousPaths = options.app.anonymousPaths;
+        for (var i = 0; i < anonymousPaths.length; i ++) {
+          if (this.path.substr(0, anonymousPaths[i].length) == anonymousPaths[i]) {
+            anonymous = true;
+            break;
+          }
+        }
+      }
       // if seeking for login page, send it to the right middleware
-      if (this.path == options.login) {
+      // Also applies to anonymous pages
+      if (this.path == options.login || anonymous) {
         yield next;
       } else {
         // since this request doesn't have a valid session, then send it to login handler
