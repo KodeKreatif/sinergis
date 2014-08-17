@@ -7,6 +7,7 @@ var Router = require ("koa-router");
 var thunkify = require ("thunkify");
 var door = require ("./lib/door");
 var auth = require ("./lib/auth");
+var jwt = require ("jwt-simple");
 var parse = require ("co-body");
 var path = require ("path");
 var fs = require ("fs");
@@ -38,15 +39,15 @@ module.exports = function (policy) {
   });
 
   router.post("/login", function * (next) {
+
     try {
       // @todo: check to database via user model, user model can fetch the data directly from db or api
       var body = yield parse(this, { limit: '1kb' });
-
       this.assertCSRF(body);
-
       var options = {
         username : body.username,
         password : body.password,
+        client : body.client,
         policy : policy,
         mock : false
       }

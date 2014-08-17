@@ -1,3 +1,6 @@
+var jwt = require ("jwt-simple");
+var parse = require ("co-body");
+
 module.exports = function (options) {
 
   options = options || {};
@@ -13,8 +16,24 @@ module.exports = function (options) {
     // session
     this.session = this.session || {};
 
+    // jwt
+    var jot = this.query.jwt; //|| body.jwt;
+
+    if (!jot && this.method == "POST"){
+      var body = yield parse(this, { limit: '500kb' });
+      jot = body.jwt;
+    }
+
+    if (jot) {
+      var token = jot;
+      var user = jwt.decode(token, "omama");
+      this.session.user = user;
+      yield next;
+      return;
+    }
+
     // now we by pass api call, be careful! -- we should have access token here
-    // if this.query, or headers, thea bearer yeah the bearer!!!
+    // if this.query, or headers, the bearer yeah the bearer!!!
     if (this.session.user || this.path.indexOf("/account/login") >= 0) {
 
       if (login) {
