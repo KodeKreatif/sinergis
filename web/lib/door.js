@@ -19,10 +19,10 @@ module.exports = function (options) {
     // jwt
     var jot = this.query.jwt; //|| body.jwt;
 
-    if (!jot && this.method == "POST"){
+    /*if (!jot && this.method == "POST"){
       var body = yield parse(this, { limit: '500kb' });
       jot = body.jwt;
-    }
+    }*/
 
     if (jot) {
       var token = jot;
@@ -31,7 +31,7 @@ module.exports = function (options) {
       yield next;
       return;
     }
-
+    
     // now we by pass api call, be careful! -- we should have access token here
     // if this.query, or headers, the bearer yeah the bearer!!!
     if (this.session.user || this.path.indexOf("/account/login") >= 0) {
