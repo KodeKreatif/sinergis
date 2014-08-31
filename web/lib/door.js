@@ -37,7 +37,7 @@ module.exports = function (options) {
     if (this.session.user || this.path.indexOf("/account/login") >= 0) {
 
       if (login) {
-        this.redirect ("/");
+        this.redirect (options.prefix || "/");
       } else {
         yield next;
       }
@@ -56,9 +56,8 @@ module.exports = function (options) {
           this.status = 401;
           this.body = {"error" : "invalid session"};
         } else {
-          return this.redirect ( "/" + options.login);
+          return this.redirect ( (policy.prefix ? (policy.prefix : "")) + options.login);
         }
-
       }
     }
   };

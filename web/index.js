@@ -26,7 +26,7 @@ module.exports = function (policy) {
   router.get("/login", function * (next) {
     this.session = this.session || {};
     if (this.session.user) {
-      this.redirect("/");
+      this.redirect(policy.prefix || "/");
     } else {
       if (overridden) {
         var error = this.session.error;
@@ -62,21 +62,21 @@ module.exports = function (policy) {
         // this.session.jwt =
         // this.session.sid =
         // this.redirect("/");
-        this.redirect("/");
+        this.redirect(policy.prefix || "/");
 
       } else {
-        this.redirect("/login");
+        this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
       }
 
     } catch (err) {
       this.session = { error : err };
-      this.redirect("/login");
+      this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
     }
   });
 
   router.all("/logout", function * (next) {
     this.session = {};
-    this.redirect("/login");
+    this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
   });
 
   return compose ([router.middleware(), door(policy)]);
