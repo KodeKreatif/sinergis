@@ -65,18 +65,18 @@ module.exports = function (policy) {
         this.redirect(policy.prefix || "/");
 
       } else {
-        this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
+        this.redirect((policy.prefix ? policy.prefix : "") + "/login");
       }
 
     } catch (err) {
       this.session = { error : err };
-      this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
+      this.redirect((policy.prefix ? policy.prefix : "") + "/login");
     }
   });
 
   router.all("/logout", function * (next) {
     this.session = {};
-    this.redirect((policy.prefix ? (policy.prefix : "")) + "/login");
+    this.redirect((policy.prefix ? policy.prefix : "") + "/login");
   });
 
   return compose ([router.middleware(), door(policy)]);

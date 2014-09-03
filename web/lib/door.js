@@ -56,7 +56,7 @@ module.exports = function (options) {
           this.status = 401;
           this.body = {"error" : "invalid session"};
         } else {
-          return this.redirect ( (policy.prefix ? (policy.prefix : "")) + options.login);
+          return this.redirect ( (options.prefix ? options.prefix : "") + "/" + options.login);
         }
       }
     }
