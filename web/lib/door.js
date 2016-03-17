@@ -9,6 +9,15 @@ module.exports = function (options) {
   // return is authenticated
   return function * (next) {
 
+    // Exclude some path from auth
+    if (options.api.apiBypass) {
+      for (var i in options.api.apiBypass) {
+        if (this.path.indexOf(options.api.apiBypass[i]) >= 0) {
+          return yield next;
+        }
+      }
+    }
+  
     // @todo: if it has jwt token, honors it, it should go directly to api
     // the priority: jwt then cookie
     var login = this.path == options.login;
